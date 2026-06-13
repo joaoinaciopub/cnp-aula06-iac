@@ -10,9 +10,28 @@ param environment string = 'dev'
 
 var namePrefix = '${projectName}-${environment}-weu'
 
+@description('Centro de custo para faturacao')
+param costCenter string = 'IT-Infrastructure'
+
+@description('Email do proprietario do recurso')
+param ownerEmail string = '<vosso-email>@my.istec.pt'
+
+@description('Data de criacao (gerada automaticamente no deploy)')
+param createdDate string = utcNow('yyyy-MM-dd')
+
+var commonTags = {
+Environment: environment
+Project: projectName
+CostCenter: costCenter
+Owner: ownerEmail
+ManagedBy: 'Bicep'
+CreatedDate: createdDate
+}
+
 resource nsg 'Microsoft.Network/networkSecurityGroups@2023-05-01' = {
 name: 'nsg-${namePrefix}'
 location: location
+tags: commonTags
 properties: {
 securityRules: [
 {
@@ -35,6 +54,7 @@ destinationPortRange: '22'
 resource vnet 'Microsoft.Network/virtualNetworks@2023-05-01' = {
 name: 'vnet-${namePrefix}'
 location: location
+tags: commonTags
 properties: {
 addressSpace: { addressPrefixes: ['10.0.0.0/16'] }
 subnets: [
