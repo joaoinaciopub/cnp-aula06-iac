@@ -14,7 +14,7 @@ var namePrefix = '${projectName}-${environment}-weu'
 param costCenter string = 'IT-Infrastructure'
 
 @description('Email do proprietario do recurso')
-param ownerEmail string = '<vosso-email>@my.istec.pt'
+param ownerEmail string = 'joao.inacio-pub@my.istec.pt'
 
 @description('Data de criacao (gerada automaticamente no deploy)')
 param createdDate string = utcNow('yyyy-MM-dd')
@@ -81,6 +81,7 @@ param sshPublicKey string
 resource publicIp 'Microsoft.Network/publicIPAddresses@2023-05-01' = {
 name: 'pip-${namePrefix}-001'
 location: location
+tags: commonTags
 sku: { name: 'Standard' }
 properties: { publicIPAllocationMethod: 'Static' }
 }
@@ -88,6 +89,7 @@ properties: { publicIPAllocationMethod: 'Static' }
 resource nic 'Microsoft.Network/networkInterfaces@2023-05-01' = {
 name: 'nic-${namePrefix}-001'
 location: location
+tags: commonTags
 properties: {
 ipConfigurations: [
 {
@@ -105,6 +107,7 @@ publicIPAddress: { id: publicIp.id }
 resource dataDisk 'Microsoft.Compute/disks@2023-04-02' = {
 name: 'disk-${namePrefix}-data-001'
 location: location
+tags: commonTags
 sku: { name: 'Standard_LRS' }
 properties: {
 creationData: { createOption: 'Empty' }
@@ -115,6 +118,7 @@ diskSizeGB: 64
 resource vm 'Microsoft.Compute/virtualMachines@2023-09-01' = {
 name: 'vm-${namePrefix}-web-001'
 location: location
+tags: commonTags
 properties: {
 hardwareProfile: { vmSize: vmSize }
 osProfile: {
